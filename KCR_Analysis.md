@@ -12,6 +12,26 @@ library(lattice)
 ``` r
 # input data and create a data frame (df) 
 royals = read.csv("royals.csv")
+# look at the head of the df 
+print(head(royals))
+```
+
+    ##   month day attend day_of_week opponent temp  skies day_night cap shirt
+    ## 1   APR   3  40030      Sunday     Mets   74  Clear     Night  NO    NO
+    ## 2   APR   5  39782     Tuesday     Mets   68  Clear       Day  NO    NO
+    ## 3   APR   8  27166      Friday    Twins   58  Clear     Night  NO    NO
+    ## 4   APR   9  31001    Saturday    Twins   60  Clear     Night  NO    NO
+    ## 5   APR  10  35317      Sunday    Twins   68 Cloudy       Day  NO    NO
+    ## 6   APR  19  26889     Tuesday   Tigers   67 Cloudy     Night  NO    NO
+    ##   fireworks bobblehead bucknight
+    ## 1        NO         NO        NO
+    ## 2        NO         NO        NO
+    ## 3        NO         NO        NO
+    ## 4        NO         NO        NO
+    ## 5        NO         NO        NO
+    ## 6        NO         NO        NO
+
+``` r
 # look at the structure of the df
 print(str(royals))
 ```
@@ -63,41 +83,21 @@ print(summary(royals))
     ## 
 
 ``` r
-# look at the head of the df 
-print(head(royals))
-```
-
-    ##   month day attend day_of_week opponent temp  skies day_night cap shirt
-    ## 1   APR   3  40030      Sunday     Mets   74  Clear     Night  NO    NO
-    ## 2   APR   5  39782     Tuesday     Mets   68  Clear       Day  NO    NO
-    ## 3   APR   8  27166      Friday    Twins   58  Clear     Night  NO    NO
-    ## 4   APR   9  31001    Saturday    Twins   60  Clear     Night  NO    NO
-    ## 5   APR  10  35317      Sunday    Twins   68 Cloudy       Day  NO    NO
-    ## 6   APR  19  26889     Tuesday   Tigers   67 Cloudy     Night  NO    NO
-    ##   fireworks bobblehead bucknight
-    ## 1        NO         NO        NO
-    ## 2        NO         NO        NO
-    ## 3        NO         NO        NO
-    ## 4        NO         NO        NO
-    ## 5        NO         NO        NO
-    ## 6        NO         NO        NO
-
-``` r
-# create the variable ordered day of the week needed for exploratory graphics
-royals$ordered_day_week = with(data=royals,
+# create the variable ordered day of the week needed for a boxplot 
+royals$ord_day_week = with(data=royals,
     ifelse ((day_of_week == "Monday"),1,
     ifelse ((day_of_week == "Tuesday"),2,
     ifelse ((day_of_week == "Wednesday"),3,
     ifelse ((day_of_week == "Thursday"),4,
     ifelse ((day_of_week == "Friday"),5,
     ifelse ((day_of_week == "Saturday"),6,7)))))))
-royals$ordered_day_week = factor(royals$ordered_day_week, levels = 1:7,
+royals$ord_day_week = factor(royals$ord_day_week, levels = 1:7,
 labels=c("Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"))
 ```
 
 ``` r
 # Exploratory analysis - distributions of attendance across days of the week
-with(data=royals,plot(ordered_day_week, attend/1000, main = "Royals Attendance by Day of Week",
+with(data=royals,plot(ord_day_week, attend/1000, main = "Royals Attendance by Day of Week",
 xlab = "Day of Week", ylab = "Attendance (in thousands)",
 col = "blue", las = 1))
 ```
@@ -106,46 +106,67 @@ col = "blue", las = 1))
 
 ``` r
 # look to see when the Royals use a certain promotion
-with(royals, table(cap, ordered_day_week)) # caps once on a Sat and Sun
+with(royals, table(cap, ord_day_week)) # caps once on a Sat and Sun
 ```
 
-    ##      ordered_day_week
+    ##      ord_day_week
     ## cap   Mon Tue Wed Thur Fri Sat Sun
     ##   NO    9  13  12    7  13  12  13
     ##   YES   0   0   0    0   0   1   1
 
 ``` r
-with(royals, table(shirt, ordered_day_week)) # shirts on Tues and one Sat
+with(royals, table(shirt, ord_day_week)) # shirts on Tues and one Sat
 ```
 
-    ##      ordered_day_week
+    ##      ord_day_week
     ## shirt Mon Tue Wed Thur Fri Sat Sun
     ##   NO    9   7  12    7  13  12  14
     ##   YES   0   6   0    0   0   1   0
 
 ``` r
-with(royals, table(fireworks, ordered_day_week)) # fireworks on Fris
+with(royals, table(fireworks, ord_day_week)) # fireworks on Fris
 ```
 
-    ##          ordered_day_week
+    ##          ord_day_week
     ## fireworks Mon Tue Wed Thur Fri Sat Sun
     ##       NO    9  13  12    7   5  13  14
     ##       YES   0   0   0    0   8   0   0
 
 ``` r
-with(royals, table(bobblehead, ordered_day_week)) # bobbleheads on Sats and once Sun
+with(royals, table(bobblehead, ord_day_week)) # bobbleheads on Sats and once Sun
 ```
 
-    ##           ordered_day_week
+    ##           ord_day_week
     ## bobblehead Mon Tue Wed Thur Fri Sat Sun
     ##        NO    9  13  12    7  13   9  13
     ##        YES   0   0   0    0   0   4   1
 
 ``` r
-with(royals, table(bucknight, ordered_day_week)) # bucknight on Thurs
+with(royals, table(bucknight, ord_day_week)) # bucknight on Thurs
 ```
 
-    ##          ordered_day_week
+    ##          ord_day_week
     ## bucknight Mon Tue Wed Thur Fri Sat Sun
     ##       NO    9  13  12    0  13  13  14
     ##       YES   0   0   0    7   0   0   0
+
+``` r
+# create the variable ordered month for another boxplot 
+royals$ord_month = with(data=royals,
+    ifelse ((month == "APR"),4,
+    ifelse ((month == "MAY"),5,
+    ifelse ((month == "JUN"),6,
+    ifelse ((month == "JUL"),7,
+    ifelse ((month == "AUG"),8,
+    ifelse ((month == "SEP"),9,10)))))))
+royals$ord_month = factor(royals$ord_month, levels=4:10,
+labels = c("April", "May", "June", "July", "Aug", "Sept", "Oct"))
+```
+
+``` r
+# # Exploratory analysis - distributions of attendance by month 
+with(data=royals,plot(ord_month,attend/1000, main = "Royals Attendance by Month",
+xlab = "Month", ylab = "Attendance (in thousands)", col = "blue", las = 1))
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-7-1.png)
