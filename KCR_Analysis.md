@@ -12,7 +12,8 @@ library(ggplot2)
 ``` r
 # input data and create a data frame (df) 
 royals = read.csv("royals.csv")
-# look at the head of the df 
+# checking out the data for errors and any other info
+# the top of the df 
 print(head(royals))
 ```
 
@@ -32,7 +33,7 @@ print(head(royals))
     ## 6        NO         NO        NO
 
 ``` r
-# look at the structure of the df
+# the structure of the df
 print(str(royals))
 ```
 
@@ -53,7 +54,7 @@ print(str(royals))
     ## NULL
 
 ``` r
-# look at the summary statistics 
+# summary statistics 
 print(summary(royals))
 ```
 
@@ -83,7 +84,7 @@ print(summary(royals))
     ## 
 
 ``` r
-# create the variable ordered day of the week needed for exploration
+# variable for ordered day of the week needed for exploration
 royals$ord_day_week = with(data=royals,
     ifelse ((day_of_week == "Monday"),1,
     ifelse ((day_of_week == "Tuesday"),2,
@@ -151,7 +152,7 @@ with(royals, table(bucknight, ord_day_week)) # bucknight on Thurs
     ##       YES   0   0   0    7   0   0   0
 
 ``` r
-# create the variable ordered month for more exploration  
+# variable for ordered month for more exploration  
 royals$ord_month = with(data=royals,
     ifelse ((month == "APR"),4,
     ifelse ((month == "MAY"),5,
@@ -172,7 +173,8 @@ xlab = "Month", ylab = "Attendance (in thousands)", col = "blue", las = 1))
 ![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
-#
+# Exploratory analysis - showing different variables affect on attendance using ggplot2
+# the relationship between temp and attend, controlling for day/night and clear/cloudy skies 
 ggplot(royals, aes(x=temp, y=attend/1000,shape=fireworks))+
   geom_point(aes(color=fireworks),size=3) + facet_grid(day_night~skies,switch="both") +
   theme_dark() + xlab("Temperature (F)") + ylab("Attendance (in thousands)") + 
@@ -180,3 +182,14 @@ ggplot(royals, aes(x=temp, y=attend/1000,shape=fireworks))+
 ```
 
 ![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
+``` r
+# plots of attendance by opponent(visiting team)
+ggplot(royals,aes(x=attend/1000,y=opponent,shape=day_night))+
+  geom_point(aes(color=day_night),size=2)+scale_shape_manual(values=c(19,19))+
+  scale_color_manual(values = c("white","black"))+theme_dark()+
+  xlab("Attendance (in thousands)") +ylab("Opponent") + 
+  ggtitle("Royals Attendance by Visiting Team") 
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-9-1.png)
