@@ -6,7 +6,7 @@ JTally
 # package for linear regression
 library(car)
 # package for graphics
-library(lattice)
+library(ggplot2)
 ```
 
 ``` r
@@ -83,7 +83,7 @@ print(summary(royals))
     ## 
 
 ``` r
-# create the variable ordered day of the week needed for a boxplot 
+# create the variable ordered day of the week needed for exploration
 royals$ord_day_week = with(data=royals,
     ifelse ((day_of_week == "Monday"),1,
     ifelse ((day_of_week == "Tuesday"),2,
@@ -133,7 +133,7 @@ with(royals, table(fireworks, ord_day_week)) # fireworks on Fris
     ##       YES   0   0   0    0   8   0   0
 
 ``` r
-with(royals, table(bobblehead, ord_day_week)) # bobbleheads on Sats and once Sun
+with(royals, table(bobblehead, ord_day_week)) # bobbleheads on Sats and one Sun
 ```
 
     ##           ord_day_week
@@ -151,7 +151,7 @@ with(royals, table(bucknight, ord_day_week)) # bucknight on Thurs
     ##       YES   0   0   0    7   0   0   0
 
 ``` r
-# create the variable ordered month for another boxplot 
+# create the variable ordered month for more exploration  
 royals$ord_month = with(data=royals,
     ifelse ((month == "APR"),4,
     ifelse ((month == "MAY"),5,
@@ -170,3 +170,13 @@ xlab = "Month", ylab = "Attendance (in thousands)", col = "blue", las = 1))
 ```
 
 ![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+``` r
+#
+ggplot(royals, aes(x=temp, y=attend/1000,shape=fireworks))+
+  geom_point(aes(color=fireworks),size=3) + facet_grid(day_night~skies,switch="both") +
+  theme_dark() + xlab("Temperature (F)") + ylab("Attendance (in thousands)") + 
+  ggtitle("Royals Weather, Fireworks and Attendance") +  scale_colour_brewer(palette = "PuBu")
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-8-1.png)
