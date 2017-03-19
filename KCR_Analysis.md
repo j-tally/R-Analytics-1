@@ -5,8 +5,9 @@ JTally
 ``` r
 # package for linear regression
 library(car)
-# package for graphics
+# packages for graphics
 library(ggplot2)
+library(lattice)
 ```
 
 ``` r
@@ -203,7 +204,7 @@ ggplot(royals,aes(x=attend/1000,y=opponent,shape=day_night))+
 # defining a model 
 my.model = {attend ~ ord_month + ord_day_week + bobblehead}
 
-# creating traing and test setup
+# creating training and test setup
 # setting seed
 set.seed(1234)
 train_test = c(rep(1,length=trunc((2/3)*nrow(royals))),
@@ -279,3 +280,33 @@ round((with(royals.test, cor(attend,predict_attend)^2)),
 
     ## 
     ## Proportion of test set variance accounted for: 0.077
+
+``` r
+# combine the training and test sets for plotting
+royals.plotting.frame = rbind(royals.train,royals.test)
+
+# visualization for predictive modeling
+group.labels = c("No Bobbleheads","Bobbleheads")
+group.symbols = c(19,24)
+group.colors = c("black","black") 
+group.fill <- c("black","blue")  
+xyplot(predict_attend/1000 ~ attend/1000 | train_test, 
+       data = royals.plotting.frame, groups = bobblehead, cex = 1,
+       pch = group.symbols, col = group.colors, fill = group.fill, 
+       layout = c(2, 1), xlim = c(20,65), ylim = c(20,65), 
+       aspect=1, type = c("p","g"),
+       panel=function(x,y, ...)
+            {panel.xyplot(x,y,...)
+             panel.segments(25,25,60,60,col="black",cex=1)
+            },
+       strip=function(...) strip.default(..., style=1),
+       xlab = "Actual Attendance (in thousands)", 
+       ylab = "Predicted Attendance (in thousands)",
+       key = list(space = "top", 
+              text = list(rev(group.labels),col = rev(group.colors)),
+              points = list(pch = rev(group.symbols), 
+              col = rev(group.colors),
+              fill = rev(group.fill))))
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-11-1.png)
