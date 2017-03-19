@@ -3,11 +3,11 @@
 
 Will promotion X increase attendance? This analysis and modeling works with data from the 2016 Kansas City Royals season.  This data is taken from Royals' home games. This aims to see if promotions (bobblehead, fireworks, etc) have a positive effect on attendance and how much that might be.    
 
-A linear model is built for predicting attendance.  After modeling, the following have an estimated effect on attendance: 
+A linear model is built for predicting attendance.  After modeling, the following have an estimated potential of increasing attendance by (fans per game): 
 
 * bobbleheads - 3,265
 * fireworks - 6,588
-* shirts - 963
+* shirts - 963 
 
 References
 
