@@ -310,3 +310,106 @@ xyplot(predict_attend/1000 ~ attend/1000 | train_test,
 ```
 
 ![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-11-1.png)
+
+``` r
+# getting estimate of the increase in attendance due to bobbleheads
+
+# use all data
+my.model.fit = lm(my.model, data= royals)
+print(summary(my.model.fit))
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = my.model, data = royals)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -6391.7 -2674.1    72.6  2350.9  9201.0 
+    ## 
+    ## Coefficients:
+    ##                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)       33093.2     1751.6  18.893  < 2e-16 ***
+    ## ord_monthMay       -747.9     1573.2  -0.475  0.63604    
+    ## ord_monthJune       916.6     1573.9   0.582  0.56229    
+    ## ord_monthJuly     -1040.4     1546.9  -0.673  0.50354    
+    ## ord_monthAug      -4399.6     1528.3  -2.879  0.00535 ** 
+    ## ord_monthSept     -2641.4     1532.7  -1.723  0.08943 .  
+    ## ord_monthOct      -2832.7     2071.0  -1.368  0.17595    
+    ## ord_day_weekTue   -2512.2     1636.2  -1.535  0.12941    
+    ## ord_day_weekWed   -2214.6     1656.6  -1.337  0.18582    
+    ## ord_day_weekThur    708.6     1898.5   0.373  0.71014    
+    ## ord_day_weekFri   -1012.7     1629.8  -0.621  0.53647    
+    ## ord_day_weekSat    1926.9     1748.1   1.102  0.27430    
+    ## ord_day_weekSun    1582.2     1624.8   0.974  0.33365    
+    ## bobbleheadYES      3264.6     1998.2   1.634  0.10700    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3698 on 67 degrees of freedom
+    ## Multiple R-squared:  0.3932, Adjusted R-squared:  0.2755 
+    ## F-statistic:  3.34 on 13 and 67 DF,  p-value: 0.0005808
+
+``` r
+# test statistical significance of the bobblehead promotion
+# type I anova calculates sums of squares for sequential tests
+print(anova(my.model.fit))
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: attend
+    ##              Df    Sum Sq  Mean Sq F value   Pr(>F)   
+    ## ord_month     6 271813757 45302293  3.3135 0.006453 **
+    ## ord_day_week  6 285335256 47555876  3.4784 0.004715 **
+    ## bobblehead    1  36493696 36493696  2.6692 0.106995   
+    ## Residuals    67 916018307 13671915                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+cat("\n","Estimated Effect of the Bobblehead Promotion on Attendance: ",
+round(my.model.fit$coefficients[length(my.model.fit$coefficients)],
+digits = 0),"\n",sep="")
+```
+
+    ## 
+    ## Estimated Effect of the Bobblehead Promotion on Attendance: 3265
+
+``` r
+# diagnostic plots
+plot(my.model.fit)
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-13-1.png)![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-13-2.png)![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-13-3.png)![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-13-4.png)
+
+``` r
+# more model diagnostics 
+residualPlots(my.model.fit)
+```
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-14-1.png)
+
+    ##              Test stat Pr(>|t|)
+    ## ord_month           NA       NA
+    ## ord_day_week        NA       NA
+    ## bobblehead          NA       NA
+    ## Tukey test      -1.345    0.179
+
+``` r
+marginalModelPlots(my.model.fit)
+```
+
+    ## Warning in mmps(...): Interactions and/or factors skipped
+
+![](KCR_Analysis_files/figure-markdown_github/unnamed-chunk-14-2.png)
+
+``` r
+print(outlierTest(my.model.fit))
+```
+
+    ## 
+    ## No Studentized residuals with Bonferonni p < 0.05
+    ## Largest |rstudent|:
+    ##   rstudent unadjusted p-value Bonferonni p
+    ## 2 2.852172          0.0057919      0.46914
