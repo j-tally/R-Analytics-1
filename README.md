@@ -13,4 +13,3 @@ References
 
 * [baseball-reference.com](http://www.baseball-reference.com/teams/KCR/2016.shtml)
 * [2016 Promotions](http://blog.gamehedge.com/kansas-city-royals-promotional-schedule/)
-* Miller, Thomas W., *Modeling Techniques in Predictive Analytics*
